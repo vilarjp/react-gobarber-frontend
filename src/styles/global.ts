@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle, keyframes } from 'styled-components';
 
 export default createGlobalStyle`
 * {
@@ -25,5 +25,17 @@ h1, h2, h3, h4, h5, h6, strong {
 
 button {
   cursor: pointer;
+  border: 0;
+  background: transparent;
 }
+`;
+
+export const fadeBackground = keyframes`
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 `;
