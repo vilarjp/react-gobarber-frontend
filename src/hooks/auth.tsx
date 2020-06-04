@@ -13,7 +13,7 @@ interface SignInCredentials {
 
 interface AuthContextData {
   user: object;
-  signIn(credentials: SignInCredentials): Promise<void>;
+  signIn(credentials: SignInCredentials): Promise<any>;
   signOut(): void;
 }
 
@@ -31,7 +31,7 @@ const AuthProvider: React.FC = ({ children }) => {
     return {} as AuthState;
   });
 
-  const signIn = useCallback(async ({ email, password }) => {
+  const signIn = useCallback(async ({ email, password }): Promise<any> => {
     try {
       const response = await api.post<{ token: string; user: object }>(
         '/sessions',
@@ -47,6 +47,8 @@ const AuthProvider: React.FC = ({ children }) => {
       localStorage.setItem('@GoBarber:user', JSON.stringify(user));
 
       setData({ token, user });
+
+      return response;
     } catch (err) {
       return err;
     }
