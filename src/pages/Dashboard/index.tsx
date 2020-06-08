@@ -130,8 +130,10 @@ const Dashboard: React.FC = () => {
   }, [appointments]);
 
   const nextAppointment = useMemo(() => {
-    return appointments.find(appointment =>
-      isAfter(parseISO(appointment.date), new Date()),
+    return appointments.find(
+      appointment =>
+        isToday(parseISO(appointment.date)) &&
+        isAfter(parseISO(appointment.date), new Date()),
     );
   }, [appointments]);
 
@@ -255,7 +257,7 @@ const Dashboard: React.FC = () => {
           <ReacDayPicker
             weekdaysShort={['D', 'S', 'T', 'Q', 'Q', 'S', 'S']}
             fromMonth={new Date()}
-            disabledDays={[{ daysOfWeek: [0, 6] }, ...disabledDays]}
+            disabledDays={[{ daysOfWeek: [0, 6] }, ...disabledDays, selectDate]}
             modifiers={{
               available: { daysOfWeek: [1, 2, 3, 4, 5] },
             }}

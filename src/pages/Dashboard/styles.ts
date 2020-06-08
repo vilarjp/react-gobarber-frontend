@@ -1,7 +1,19 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { shade } from 'polished';
 
-export const Container = styled.div``;
+const fade = keyframes`
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+`;
+
+export const Container = styled.div`
+  animation: ${fade} 1s;
+`;
 
 export const Header = styled.header`
   padding: 32px 0;
