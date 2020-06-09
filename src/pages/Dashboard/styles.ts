@@ -119,8 +119,13 @@ export const Schedule = styled.section`
   }
 `;
 
+export const Loading = styled.div`
+  animation: ${fade} 1s;
+`;
+
 export const NextAppointment = styled.div`
   margin-top: 64px;
+  animation: ${fade} 1s;
 
   strong {
     color: #999591;
@@ -140,9 +145,9 @@ export const NextAppointment = styled.div`
     &::before {
       position: absolute;
       content: '';
-      width: 1px;
+      width: 2px;
       height: 80%;
-      left: 0;
+      left: 2px;
       top: 10%;
       background: #ff9000;
     }
@@ -174,6 +179,7 @@ export const NextAppointment = styled.div`
 
 export const Section = styled.section`
   margin-top: 48px;
+  animation: ${fade} 1s;
 
   > strong {
     color: #999591;

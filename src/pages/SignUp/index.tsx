@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { FiArrowLeft, FiUser, FiMail, FiLock } from 'react-icons/fi';
 import { FormHandles } from '@unform/core';
@@ -23,6 +23,8 @@ interface SignUpFormData {
 }
 
 const SignUp: React.FC = () => {
+  const [loading, setLoading] = useState(false);
+
   const formRef = useRef<FormHandles>(null);
   const { addToast } = useToast();
   const history = useHistory();
@@ -30,6 +32,8 @@ const SignUp: React.FC = () => {
   const handleSubmit = useCallback(
     async (data: SignUpFormData) => {
       try {
+        setLoading(true);
+
         formRef.current?.setErrors({});
 
         const schema = Yup.object().shape({
@@ -47,14 +51,26 @@ const SignUp: React.FC = () => {
           abortEarly: false,
         });
 
-        await api.post('/users', data);
-
-        history.push('/');
-
-        addToast({
-          type: 'success',
-          title: 'Cadastro realizado com sucesso',
-        });
+        await api
+          .post('/users', data)
+          .then(() => {
+            addToast({
+              type: 'success',
+              title: 'Cadastro realizado com sucesso',
+            });
+            history.push('/');
+          })
+          .catch(err => {
+            if (err.response.status === 400) {
+              addToast({
+                type: 'error',
+                title: 'Erro ao realizar cadastro',
+                description: 'Esse e-mail já está sendo utilizado',
+              });
+            } else {
+              throw new Error();
+            }
+          });
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
@@ -68,6 +84,8 @@ const SignUp: React.FC = () => {
           description:
             'Ocorreu um erro ao realizar o cadastro, por favor confira os dados e tente novamente',
         });
+      } finally {
+        setLoading(false);
       }
     },
     [addToast, history],
@@ -89,7 +107,10 @@ const SignUp: React.FC = () => {
               type="password"
               placeholder="Senha"
             />
-            <Button type="submit">Cadastrar</Button>
+            <Button type="submit" loading={loading}>
+              {' '}
+              {loading ? 'Carregando...' : 'Cadastrar'}
+            </Button>
           </Form>
           <Link to="/">
             <FiArrowLeft />

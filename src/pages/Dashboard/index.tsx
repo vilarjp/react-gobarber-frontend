@@ -6,6 +6,7 @@ import ReacDayPicker, { DayModifiers } from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
 import { Link } from 'react-router-dom';
 import Button from '../../components/Button';
+
 import { useAuth } from '../../hooks/auth';
 
 import {
@@ -15,6 +16,7 @@ import {
   Profile,
   Content,
   Schedule,
+  Loading,
   NextAppointment,
   Section,
   Appointment,
@@ -45,8 +47,8 @@ const Dashboard: React.FC = () => {
   const [monthAvailability, setMonthAvailability] = useState<
     MonthAvailabilityItem[]
   >([]);
-
   const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const { user, signOut } = useAuth();
 
@@ -74,6 +76,7 @@ const Dashboard: React.FC = () => {
   }, [user.id, currentMonth]);
 
   useEffect(() => {
+    setLoading(true);
     api
       .get<Appointment[]>('/appointments/schedule', {
         params: {
@@ -90,7 +93,8 @@ const Dashboard: React.FC = () => {
           };
         });
         setAppointments(appointmentsFormatted);
-      });
+      })
+      .finally(() => setLoading(false));
   }, [selectDate]);
 
   const disabledDays = useMemo(() => {
@@ -130,10 +134,8 @@ const Dashboard: React.FC = () => {
   }, [appointments]);
 
   const nextAppointment = useMemo(() => {
-    return appointments.find(
-      appointment =>
-        isToday(parseISO(appointment.date)) &&
-        isAfter(parseISO(appointment.date), new Date()),
+    return appointments.find(appointment =>
+      isToday(parseISO(appointment.date)),
     );
   }, [appointments]);
 
@@ -172,85 +174,100 @@ const Dashboard: React.FC = () => {
             <span>{selectDayAsText}</span>
             <span>{selectedWeekDay}</span>
           </p>
-
-          {isToday(selectDate) && nextAppointment && (
-            <NextAppointment>
-              <h2>Agendamento a seguir</h2>
-              <div>
-                {nextAppointment.user.avatar_url ? (
-                  <img
-                    src={nextAppointment.user.avatar_url}
-                    alt={nextAppointment.user.name}
-                  />
-                ) : (
-                  <FiUser size={20} />
+          {loading ? (
+            <Loading
+              style={{
+                height: '400px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <h2>Carregando...</h2>
+            </Loading>
+          ) : (
+            <>
+              {nextAppointment &&
+                isAfter(new Date(nextAppointment.date), new Date()) && (
+                  <NextAppointment>
+                    <h2>Agendamento a seguir</h2>
+                    <div>
+                      {nextAppointment?.user?.avatar_url ? (
+                        <img
+                          src={nextAppointment?.user?.avatar_url}
+                          alt={nextAppointment?.user?.name}
+                        />
+                      ) : (
+                        <FiUser size={20} />
+                      )}
+                      <strong>{nextAppointment?.user?.name}</strong>
+                      <span>
+                        <FiClock />
+                        {nextAppointment?.hourFormatted}
+                      </span>
+                    </div>
+                  </NextAppointment>
                 )}
-                <strong>{nextAppointment.user.name}</strong>
-                <span>
-                  <FiClock />
-                  {nextAppointment.hourFormatted}
-                </span>
-              </div>
-            </NextAppointment>
+
+              <Section>
+                <strong>Manhã</strong>
+
+                {morningAppointments.length > 0 ? (
+                  morningAppointments.map(appointment => (
+                    <Appointment key={appointment.id}>
+                      <span>
+                        <FiClock />
+                        {appointment.hourFormatted}
+                      </span>
+
+                      <div>
+                        {appointment.user.avatar_url ? (
+                          <img
+                            src={appointment.user.avatar_url}
+                            alt={appointment.user.name}
+                          />
+                        ) : (
+                          <FiUser size={20} />
+                        )}
+                        <strong>{appointment.user.name}</strong>
+                      </div>
+                    </Appointment>
+                  ))
+                ) : (
+                  <p>Nenhum agendamento foi encontrado para o turno da manhã</p>
+                )}
+              </Section>
+
+              <Section>
+                <strong>Tarde</strong>
+
+                {afterenoonAppointments.length > 0 ? (
+                  afterenoonAppointments.map(appointment => (
+                    <Appointment key={appointment.id}>
+                      <span>
+                        <FiClock />
+                        {appointment.hourFormatted}
+                      </span>
+
+                      <div>
+                        {appointment.user.avatar_url ? (
+                          <img
+                            src={appointment.user.avatar_url}
+                            alt={appointment.user.name}
+                          />
+                        ) : (
+                          <FiUser size={20} />
+                        )}
+                        <strong>{appointment.user.name}</strong>
+                      </div>
+                    </Appointment>
+                  ))
+                ) : (
+                  <p>Nenhum agendamento foi encontrado para o turno da tarde</p>
+                )}
+              </Section>
+            </>
           )}
-
-          <Section>
-            <strong>Manhã</strong>
-
-            {morningAppointments.length > 0 ? (
-              morningAppointments.map(appointment => (
-                <Appointment key={appointment.id}>
-                  <span>
-                    <FiClock />
-                    {appointment.hourFormatted}
-                  </span>
-
-                  <div>
-                    {appointment.user.avatar_url ? (
-                      <img
-                        src={appointment.user.avatar_url}
-                        alt={appointment.user.name}
-                      />
-                    ) : (
-                      <FiUser size={20} />
-                    )}
-                    <strong>{appointment.user.name}</strong>
-                  </div>
-                </Appointment>
-              ))
-            ) : (
-              <p>Nenhum agendamento foi encontrado para o turno da manhã</p>
-            )}
-          </Section>
-
-          <Section>
-            <strong>Tarde</strong>
-
-            {afterenoonAppointments.length > 0 ? (
-              afterenoonAppointments.map(appointment => (
-                <Appointment key={appointment.id}>
-                  <span>
-                    <FiClock />
-                    {appointment.hourFormatted}
-                  </span>
-
-                  <div>
-                    {appointment.user.avatar_url ? (
-                      <img
-                        src={appointment.user.avatar_url}
-                        alt={appointment.user.name}
-                      />
-                    ) : (
-                      <FiUser size={20} />
-                    )}
-                    <strong>{appointment.user.name}</strong>
-                  </div>
-                </Appointment>
-              ))
-            ) : (
-              <p>Nenhum agendamento foi encontrado para o turno da tarde</p>
-            )}
-          </Section>
         </Schedule>
 
         <Calendar>

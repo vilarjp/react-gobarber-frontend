@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { FiLogIn, FiMail, FiLock } from 'react-icons/fi';
 import { FormHandles } from '@unform/core';
@@ -21,6 +21,8 @@ interface SignInFormData {
 }
 
 const SignIn: React.FC = () => {
+  const [loading, setLoading] = useState(false);
+
   const formRef = useRef<FormHandles>(null);
 
   const { signIn } = useAuth();
@@ -30,6 +32,7 @@ const SignIn: React.FC = () => {
   const handleSubmit = useCallback(
     async (data: SignInFormData) => {
       try {
+        setLoading(true);
         formRef.current?.setErrors({});
 
         const schema = Yup.object().shape({
@@ -49,7 +52,13 @@ const SignIn: React.FC = () => {
         });
 
         if (response.status === 200) history.push('/dashboard');
-        else throw new Error();
+        else if (response.status === 401) {
+          addToast({
+            type: 'error',
+            title: 'Erro na autenticação',
+            description: 'E-mail ou senha inválidos',
+          });
+        } else throw new Error();
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
@@ -62,6 +71,8 @@ const SignIn: React.FC = () => {
           description:
             'Ocorreu um erro ao realizar o login, por favor confira o seu e-mail e senha',
         });
+      } finally {
+        setLoading(false);
       }
     },
     [signIn, addToast, history],
@@ -81,7 +92,9 @@ const SignIn: React.FC = () => {
               type="password"
               placeholder="Senha"
             />
-            <Button type="submit">Entrar</Button>
+            <Button type="submit" loading={loading}>
+              {loading ? 'Carregando...' : 'Entrar'}
+            </Button>
             <Link to="/forgot-password">Esqueci minha senha</Link>
           </Form>
           <Link to="/signup">
