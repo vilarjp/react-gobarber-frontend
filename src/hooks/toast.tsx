@@ -51,10 +51,6 @@ const ToastProvider: React.FC = ({ children }) => {
 function useToast(): ToastContextData {
   const context = useContext(ToastContext);
 
-  if (!context) {
-    throw new Error('must provide ToastProvider');
-  }
-
   return context;
 }
 
