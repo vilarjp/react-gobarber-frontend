@@ -1,7 +1,5 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
 <h4 align="center">
-  ReactJS and TypeScript
+  GoBarber
 </h4>
 
 <p align="center">
@@ -10,11 +8,9 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
     <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/vilarjp/gobarber-frontend" />
 </p>
 
-<p align="center">
-  ![signin](https://github.com/vilarjp/gobarber-frontend/blob/master/images/signin.png)
-  ![signin](https://github.com/vilarjp/gobarber-frontend/blob/master/images/schedule.png)
-  ![signin](https://github.com/vilarjp/gobarber-frontend/blob/master/images/signup.png)
-</p>
+![signin](https://github.com/vilarjp/gobarber-frontend/blob/master/images/signin.png)
+![signin](https://github.com/vilarjp/gobarber-frontend/blob/master/images/schedule.png)
+![signin](https://github.com/vilarjp/gobarber-frontend/blob/master/images/signup.png)
 
 ## :rocket: Technologies
 
