@@ -1,5 +1,29 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+<h4 align="center">
+  ReactJS and TypeScript
+</h4>
+
+<p align="center">
+    <img alt="GitHub language count" src="https://img.shields.io/github/languages/count/vilarjp/gobarber-frontend" />
+    <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/vilarjp/gobarber-frontend" />
+    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/vilarjp/gobarber-frontend" />
+</p>
+
+<p align="center">
+  ![signin](https://github.com/vilarjp/gobarber-frontend/blob/master/images/signin.png)
+  ![signin](https://github.com/vilarjp/gobarber-frontend/blob/master/images/schedule.png)
+  ![signin](https://github.com/vilarjp/gobarber-frontend/blob/master/images/signup.png)
+</p>
+
+## :rocket: Technologies
+
+- [ReactJS w/ Context API and Hooks](https://reactjs.org/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Styled Components](https://styled-components.com/)
+
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
 ## Available Scripts
 
 In the project directory, you can run:
